@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "linux_parser.h"
 
@@ -35,13 +36,13 @@ string LinuxParser::OperatingSystem() {
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
-  string os, kernel;
+  string os, kernel, version;
   string line;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> os >> kernel;
+    linestream >> os >> version >> kernel;
   }
   return kernel;
 }
@@ -66,14 +67,68 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// TODO: Read and return the system memory utilization
-float LinuxParser::MemoryUtilization() { return 0.0; }
+//JAQ: Done
+float LinuxParser::MemoryUtilization() {
 
-// TODO: Read and return the system uptime
-long LinuxParser::UpTime() { return 0; }
+  //string memTotal, memFree, memAvailable, Buffers;
+  string line, key, value;
+
+  float memTotal, memFree;
+
+  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      //std::replace(line.begin(), line.end(), ':', '');
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        if (key == "MemTotal:") {
+          memTotal = std::stof(value); 
+        }
+        if (key == "MemFree:") {
+          memFree = std::stof(value); 
+        }
+      }
+    }
+  }
+
+  return memFree/memTotal;
+}
+
+//JAQ: Done
+long LinuxParser::UpTime() { 
+  
+  string timeUp;
+  string line;
+  std::ifstream stream(kProcDirectory + kUptimeFilename);
+  if (stream.is_open()) {
+    
+    std::getline(stream, line);
+    std::replace(line.begin(), line.end(), '.', ' ');
+
+    std::istringstream linestream(line);
+    linestream >> timeUp;
+  }
+  long timeUpNum = std::stol(timeUp);
+
+  return timeUpNum;
+}
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return 0; }
+
+//Some thoughts:
+
+//- PID stuff is weridly mixed with system stuff. Maybe separate? Maybe reuse code?
+//- Jiffy stuff is used to compute cpu utilisation I guess?
+//- Next: CPU stuff
+//- total processes
+//- running processes
+//- Create basic data structure for a process
+//  - Put the pipeline in to parse that
+//  - Populate the data structure and make sure it's then all parsed
+//- Do all the bonus stuff
+//- Look at other refactoring, such as this class, other issues?
+
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
