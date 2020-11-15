@@ -75,6 +75,9 @@ float LinuxParser::MemoryUtilization() {
 
   float memTotal, memFree;
 
+  //Stop a divide zero in case of some read error, and stop unnecessary IO.
+  int foundDetails = 0;
+
   std::ifstream filestream(kProcDirectory + kMeminfoFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -83,15 +86,21 @@ float LinuxParser::MemoryUtilization() {
       while (linestream >> key >> value) {
         if (key == "MemTotal:") {
           memTotal = std::stof(value); 
+          foundDetails++;
         }
         if (key == "MemFree:") {
           memFree = std::stof(value); 
+          foundDetails++;
+        }
+
+        if(foundDetails == 2){
+          return memFree/memTotal;
         }
       }
     }
   }
 
-  return memFree/memTotal;
+  return 0;
 }
 
 //JAQ: Done
@@ -141,7 +150,29 @@ long LinuxParser::ActiveJiffies() { return 0; }
 long LinuxParser::IdleJiffies() { return 0; }
 
 // TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+vector<string> LinuxParser::CpuUtilization() { 
+
+  string line, key, value;
+
+  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      //std::replace(line.begin(), line.end(), ':', '');
+      std::istringstream linestream(line);
+      while (linestream >> key) {
+        if (key == "cpu") {
+          vector<string> cpuValues(std::istream_iterator<string>(linestream), {});
+
+          //Does this optimise to useing move semantics?
+          return cpuValues;
+        }
+      }
+    }
+  }
+  
+  return {}; 
+  
+}
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { return 0; }
