@@ -5,7 +5,6 @@
 #include <string>
 #include <iostream>
 
-//user    nice   system  idle      iowait irq   softirq  steal  guest  guest_nice
 struct Data {
 
     static constexpr int numElements = 10;
@@ -23,50 +22,30 @@ struct Data {
             }
         }
 
-        long User(){
-            return values[0];
-        }
-        long Nice(){
-            return values[1];
-        }
-        long System(){
-            return values[2];
-        }
-        long Idle(){
-            return values[3];
-        }
-        long Iowait(){
-            return values[4];
-        }
-        long Irq(){
-            return values[5];
-        }
-        long SoftIrq(){
-            return values[6];
-        }
-        long Steal(){
-            return values[7];
-        }
-        long Guest(){
-            return values[8];
-        }
-        long Guest_nice(){
-            return values[9];
-        }
+        long User(){return values[0];}
+        long Nice(){return values[1];}
+        long System(){return values[2];}
+        long Idle(){return values[3];}
+        long Iowait(){return values[4];}
+        long Irq(){return values[5];}
+        long SoftIrq(){return values[6];}
+        long Steal(){return values[7];}
+        long Guest(){return values[8];}
+        long Guest_nice(){return values[9];}
 
+        //JAQ: Perhaps lazy, but seems low risk
+        long IdleCache;
+        long TotalCache;
 
     private:
-        //std::vector<long> data(long,10);
+        //user nice system idle iowait irq softirq steal guest guest_nice
         std::vector<long> values;
-
-
 };
 
 class Processor {
  public:
-  float Utilization();  // TODO: See src/processor.cpp
+  float Utilization();
 
-  // TODO: Declare any necessary private members
  private:
     Data currentData;
     Data previousData;

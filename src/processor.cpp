@@ -7,34 +7,29 @@
 using std::vector;
 using std::string;
 
-// TODO: Return the aggregate CPU utilization
+// JAQ: Return the aggregate CPU utilization
+// JAQ: uses cashing to reduve the number of calculations
 float Processor::Utilization() {
     
-    //Called with move semantics as this is an rvalue
-    //Otheriwise should pass reference
+    //JAQ: Called with move semantics as this is an rvalue
+    //JAQ: Otheriwise should pass reference
     UpdateData(LinuxParser::CpuUtilization());
     
-    //Do I need to return these as references?
-    //JAQ TODO: odo cache new values in data, and then use prev values from data
-    long prevIdle = previousData.Idle() + previousData.Iowait();
-    long idle = currentData.Idle() + currentData.Iowait();
-    
-    long prevNonIdle = previousData.User() + previousData.Nice() + previousData.System() + previousData.Irq() + previousData.SoftIrq() + previousData.Steal();
+    //JAQ: Better to return as reference?
+    currentData.IdleCache = currentData.Idle() + currentData.Iowait();
     long nonIdle = currentData.User() + currentData.Nice() + currentData.System() + currentData.Irq() + currentData.SoftIrq() + currentData.Steal();
+    currentData.TotalCache = currentData.IdleCache + nonIdle;
 
-    long prevTotal = prevIdle + prevNonIdle;
-    long total = idle + nonIdle;
-
-    //Store in a float now rather than casting later
-    float totald = total - prevTotal;
-    float idled = idle - prevIdle;
+    //JAQ: Store in a float now rather than casting later
+    float totald = currentData.TotalCache - previousData.TotalCache;
+    float idled = currentData.IdleCache - previousData.IdleCache;
 
     return (totald - idled)/totald;
  }
 
  void Processor::UpdateData(vector<string> cpuStrings){
 
-    //Essentially using a double buffer
+    //JAQ: Essentially using a double buffer
     std::swap(currentData, previousData);
     currentData.Update(cpuStrings);
  }
