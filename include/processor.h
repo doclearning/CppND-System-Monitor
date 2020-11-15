@@ -1,15 +1,64 @@
 #ifndef PROCESSOR_H
 #define PROCESSOR_H
 
+#include <vector>
+#include <string>
+#include <iostream>
+
 //user    nice   system  idle      iowait irq   softirq  steal  guest  guest_nice
 struct Data {
+
+    static constexpr int numElements = 10;
     
     public:
+        Data(){
+            std::fill_n(std::back_inserter(values), numElements, 0);
+        }
+
+        void Update(std::vector<std::string> stringvalues){
+
+            int index = 0;
+            for(auto value : stringvalues){
+                values[index++] = std::stol(value);
+            }
+        }
+
+        long User(){
+            return values[0];
+        }
+        long Nice(){
+            return values[1];
+        }
+        long System(){
+            return values[2];
+        }
+        long Idle(){
+            return values[3];
+        }
+        long Iowait(){
+            return values[4];
+        }
+        long Irq(){
+            return values[5];
+        }
+        long SoftIrq(){
+            return values[6];
+        }
+        long Steal(){
+            return values[7];
+        }
+        long Guest(){
+            return values[8];
+        }
+        long Guest_nice(){
+            return values[9];
+        }
 
 
     private:
+        //std::vector<long> data(long,10);
+        std::vector<long> values;
 
-    vector<int> data(10);
 
 };
 
@@ -19,9 +68,10 @@ class Processor {
 
   // TODO: Declare any necessary private members
  private:
-    Data currentData, previousData;
+    Data currentData;
+    Data previousData;
 
-    void UpdateData(vector<string> cpuStrings);
+    void UpdateData(std::vector<std::string> cpuStrings);
 
 };
 

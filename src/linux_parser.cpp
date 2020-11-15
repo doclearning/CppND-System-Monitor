@@ -151,15 +151,14 @@ long LinuxParser::IdleJiffies() { return 0; }
 
 // TODO: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() { 
-
   string line, key, value;
 
-  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
+  std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
-      //std::replace(line.begin(), line.end(), ':', '');
       std::istringstream linestream(line);
       while (linestream >> key) {
+        
         if (key == "cpu") {
           vector<string> cpuValues(std::istream_iterator<string>(linestream), {});
 
