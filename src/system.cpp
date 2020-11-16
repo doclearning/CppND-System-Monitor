@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "process.h"
 #include "processor.h"
@@ -14,11 +15,24 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-// TODO: Return the system's CPU
+// JAQ: Done
 Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { return processes_; }
+vector<Process>& System::Processes() { 
+    
+    vector<int> pids{LinuxParser::Pids()};
+    for(auto pid : pids){
+        processMap.emplace(pid, Process(pid));
+    } 
+
+    for(auto& process: processMap){
+        process.second.CpuUtilization();
+    }
+
+    return processes_; 
+    
+}
 
 //JAQ: Done
 std::string System::Kernel() { return LinuxParser::Kernel(); }
@@ -29,11 +43,11 @@ float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
 //JAQ: Done
 std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
 
-// TODO: Return the number of processes actively running on the system
-int System::RunningProcesses() { return 5; }
+// JAQ: Done
+int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 
-// TODO: Return the total number of processes on the system
-int System::TotalProcesses() { return 10; }
+// JAQ: Done
+int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
 //JAQ: Done
 long int System::UpTime() { return LinuxParser::UpTime(); }

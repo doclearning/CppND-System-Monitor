@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "process.h"
 #include "processor.h"
@@ -22,6 +23,7 @@ class System {
  private:
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
+  std::map<int, Process> processMap = {};
 };
 
 #endif

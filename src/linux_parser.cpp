@@ -122,34 +122,24 @@ long LinuxParser::UpTime() {
   return timeUpNum;
 }
 
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
-
-//Some thoughts:
-
-//- PID stuff is weridly mixed with system stuff. Maybe separate? Maybe reuse code?
-//- Jiffy stuff is used to compute cpu utilisation I guess?
-//- Next: CPU stuff
-//- total processes
-//- running processes
-//- Create basic data structure for a process
-//  - Put the pipeline in to parse that
-//  - Populate the data structure and make sure it's then all parsed
-//- Do all the bonus stuff
-//- Look at other refactoring, such as this class, other issues?
+// JAQ: I can't see any reason to do any of this given how I've structured things.
+// JAQ: Also doesn't seem to be a requirement in the project rubric.
 
 
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
+// // TODO: Read and return the number of jiffies for the system
+// long LinuxParser::Jiffies() { return 0; }
 
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+// // TODO: Read and return the number of active jiffies for a PID
+// // REMOVE: [[maybe_unused]] once you define the function
+// long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
 
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+// // TODO: Read and return the number of active jiffies for the system
+// long LinuxParser::ActiveJiffies() { return 0; }
 
-// TODO: Read and return CPU utilization
+// // TODO: Read and return the number of idle jiffies for the system
+// long LinuxParser::IdleJiffies() { return 0; }
+
+// JAQ: Done
 vector<string> LinuxParser::CpuUtilization() { 
   string line, key, value;
 
@@ -160,10 +150,9 @@ vector<string> LinuxParser::CpuUtilization() {
       while (linestream >> key) {
         
         if (key == "cpu") {
-          vector<string> cpuValues(std::istream_iterator<string>(linestream), {});
 
-          //Does this optimise to useing move semantics?
-          return cpuValues;
+          //Does this optimise to useing move semantics because it's a rvalue?
+          return vector<string>(std::istream_iterator<string>(linestream), {});;
         }
       }
     }
@@ -173,11 +162,52 @@ vector<string> LinuxParser::CpuUtilization() {
   
 }
 
-// TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
+// JAQ: Done
+// JAQ: It's tempting to break out a method for this, RunningProcesses, and maybe CPUUtilisations. Probably not worth it for this number of uses.
+// JAQ: Also tempting to cache the values somehow, but then would need state, which creates a whole mess. 
+int LinuxParser::TotalProcesses() {
+  
+  string line, key, value;
 
-// TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        
+        if (key == "processes") {
+ 
+          return std::stoi(value);
+        }
+      }
+    }
+  }
+  
+  return 0; 
+
+}
+
+// JAQ: Done
+int LinuxParser::RunningProcesses() { 
+  
+    string line, key, value;
+
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        
+        if (key == "procs_running") {
+ 
+          return std::stoi(value);
+        }
+      }
+    }
+  }
+  
+  return 0; 
+}
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
