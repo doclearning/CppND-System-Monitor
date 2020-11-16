@@ -190,7 +190,7 @@ int LinuxParser::TotalProcesses() {
 // JAQ: Done
 int LinuxParser::RunningProcesses() { 
   
-    string line, key, value;
+  string line, key, value;
 
   std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
@@ -215,7 +215,11 @@ string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Ram(int pid) { 
+  
+  return string(); 
+  
+}
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function

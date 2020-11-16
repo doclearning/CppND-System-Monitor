@@ -19,18 +19,29 @@ using std::vector;
 Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { 
+vector<Process*>& System::Processes() { 
     
     vector<int> pids{LinuxParser::Pids()};
-    for(auto pid : pids){
-        processMap.emplace(pid, Process(pid));
-    } 
+    
+    processContainer.Update(pids);
+    processContainer.Sort();
 
-    for(auto& process: processMap){
-        process.second.CpuUtilization();
-    }
+    // if(debug == false){
 
-    return processes_; 
+    //     // for(int pid : pids){
+
+    //     //     processes_.emplace_back(Process(pid));
+    //     // }
+        
+
+    //     debug = true;
+    // }
+
+    // for(auto& process: processMap){
+    //     process.second.CpuUtilization();
+    // }
+
+    return processContainer.processVec; 
     
 }
 
