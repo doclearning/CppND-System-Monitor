@@ -27,6 +27,13 @@ float Processor::Utilization() {
     return (totald - idled)/totald;
  }
 
+ float Processor::TotalUtilization() {
+    
+    currentData.Update(LinuxParser::CpuUtilization());
+
+    return currentData.GetAllSum();
+ }
+
  void Processor::UpdateData(vector<string> cpuStrings){
 
     //JAQ: Essentially using a double buffer

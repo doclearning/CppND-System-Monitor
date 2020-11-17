@@ -23,6 +23,14 @@ struct Data {
             }
         }
 
+        float GetAllSum(){
+            long sum = 0;
+            for(auto value : values){
+                sum+=value;
+            }
+            return sum;
+        }
+
         long User(){return values[0];}
         long Nice(){return values[1];}
         long System(){return values[2];}
@@ -49,6 +57,7 @@ using namespace processorData;
 class Processor {
  public:
   float Utilization();
+  float TotalUtilization();
 
  private:
     processorData::Data currentData;

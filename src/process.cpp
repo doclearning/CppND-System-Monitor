@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #include "process.h"
 #include "linux_parser.h"
@@ -19,31 +20,23 @@ int Process::Pid() { return pid; }
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() { 
 
-    
-
     UpdateData(LinuxParser::CpuUtilization(pid));
-    long uptime = LinuxParser::UpTime();
 
-    long totalTime = data.Utime() + data.Stime(); //Consider adding child process time
+    currentData.TotalProcessCache = currentData.Utime() + currentData.Stime();
+    currentData.TotalProcessorCache = TotalProcessorUtilization;
 
-    std::cout << "Totaltime("<< totalTime << ")\n";
+    if(hasPreviousData)
+        cpuUtilization = (currentData.TotalProcessCache - previousData.TotalProcessCache)/(float)(currentData.TotalProcessorCache-previousData.TotalProcessorCache);
 
-    long hertz = sysconf(_SC_CLK_TCK);
+    hasPreviousData = true;
 
-    long seconds = uptime - (data.Starttime()/hertz);
-    
-    cpuUtilization = 100 * ((totalTime/(float)hertz)/(float)seconds);
-
-    //std::cout << "Utiliz("<< cpuUtilization << ")\n";
-    
     return cpuUtilization;
 }
 
  void Process::UpdateData(vector<string> cpuStrings){
 
-    //std::cout << "cpustrings(" << cpuStrings.size() << ")\n";
-    //std::swap(currentData, previousData);
-    data.Update(cpuStrings);
+    std::swap(currentData, previousData);
+    currentData.Update(cpuStrings);
  }
 
 // TODO: Return the command that generated this process

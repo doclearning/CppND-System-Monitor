@@ -6,6 +6,7 @@
 #include <map>
 
 #include "process.h"
+#include "processor.h"
 
 using std::vector;
 
@@ -19,7 +20,7 @@ class ProcessContainer {
     std::vector<Process*> processVec = {};
 
  private:
-  
+  Processor cpu_ = {};
   std::map<int, Process*> processMap = {};
 };
 

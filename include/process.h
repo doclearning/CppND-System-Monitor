@@ -3,40 +3,56 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace processData{
    struct Data {
 
-      static constexpr int numElements = 49;
-      static constexpr int dataOffset = 3;
+      static constexpr int numElements = 5;
       
       public:
          Data(){
-               std::fill_n(std::back_inserter(values), numElements, 0);
+               //Wstd::fill_n(std::back_inserter(values), numElements, 0W);
          }
 
-         void Update(std::vector<std::string> stringvalues){
+         void Update(std::vector<std::string> valuesIn){
 
-            int writeIndex = 0;
-            for(uint i = 3; i < stringvalues.size(); ++i){
-               values[writeIndex++] = std::stol(stringvalues[i]);
-            }
-            /This is broken. Left as such.
+
+            //std::cout << "size_hpp(" << stringvalues.size() << ")\n"
+            //values = stringvalues;
+
+            //std::swap(values, stringvalues);
+
+            //int writeIndex = 0;
+            // for(uint i = 0; i < stringvalues.size(); ++i){
+
+            //    //std::cout << "(" << writeIndex << "," << stringvalues[i] << ") "
+            //    if(i >= 3)values[i] = stringvalues[i]);
+            //    else values[i] = 0;
+            // }
+            //std::cout << "\n";
+            utime = std::stol(valuesIn[13]);
+            stime = std::stol(valuesIn[14]);
+            cutime = std::stol(valuesIn[15]);
+            cstime = std::stol(valuesIn[16]);
+            starttime = std::stol(valuesIn[21]);
          }
 
-         long Utime(){return values[13-dataOffset];}
-         long Stime(){return values[14-dataOffset];}
-         long Cutime(){return values[15-dataOffset];}
-         long Cstime(){return values[16-dataOffset];}
-         long Starttime(){return values[21-dataOffset];}
+         long Utime(){return utime;}
+         long Stime(){return stime;}
+         long Cutime(){return stime;}
+         long Cstime(){return stime;}
+         long Starttime(){return stime;}
 
          //JAQ: Perhaps lazy, but seems low risk
-         long IdleCache;
-         long TotalCache;
+         //long IdleCache;
+         long TotalProcessCache;
+         long TotalProcessorCache;
 
       private:
          //user nice system idle iowait irq softirq steal guest guest_nice
-         std::vector<long> values;
+         //std::vector<std::string> values;
+         long utime, stime, cutime, cstime, starttime = 0;
    };
 }
 
@@ -44,8 +60,8 @@ using namespace processData;
 
 class Process {
  public:
-    Process(int pidIn) : pid(pidIn) {}
-    Process() : pid(0) {}
+    Process(int pidIn/*, Processor& cpuIn*/) : pid(pidIn)/*, cpu(cpuIn)*/ {}
+    //Process() : pid(0) {}
 
     int Pid();                               
     std::string User();                      // TODO: See src/process.cpp
@@ -58,12 +74,16 @@ class Process {
    const int pid = 0;
    float cpuUtilization;
 
+   float TotalProcessorUtilization;
+
   // TODO: Declare any necessary private members
  private:
     
     //float cpuUtilizationCache;
-    processData::Data data;
-    //Data previousData;
+    processData::Data currentData;
+    processData::Data previousData;
+
+    bool hasPreviousData = false;
 
     void UpdateData(std::vector<std::string> cpuStrings);
 };

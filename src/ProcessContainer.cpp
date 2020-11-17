@@ -7,18 +7,28 @@
 
 void ProcessContainer::Update(vector<int>& pids){
 
+    
+
       for(int pid : pids){  
 
         //JAQ: Check if the pid exists in the map. Could do this in one line, but want to avoid creating pointer if possible
         if(processMap.find(pid) == processMap.end()){
 
-            Process* process = new Process(pid);
+            Process* process = new Process(pid/*, cpu*/);
 
             //Add to both containers
             processMap.emplace(pid, process);
             processVec.emplace_back(process);
         }
 
+
+
+         //Send current cpu utilization here to all processes
+      }
+
+      float updatedUtilization =  cpu_.TotalUtilization();
+      for(auto process: processVec){
+        process->TotalProcessorUtilization = updatedUtilization;
       }
 
       //JAQ TODO: Handle removal if a process disappears.

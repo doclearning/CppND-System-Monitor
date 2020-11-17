@@ -219,6 +219,8 @@ vector<string> LinuxParser::CpuUtilization(int pid){
     std::getline(stream, line);
 
     std::istringstream linestream(line);
+
+    //std::cout << "Data(" << line << ")\n";
     return vector<string>(std::istream_iterator<string>(linestream), {});
   }
 
