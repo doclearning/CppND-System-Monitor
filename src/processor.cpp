@@ -30,7 +30,6 @@ float Processor::Utilization() {
  float Processor::TotalUtilization() {
     
     currentData.Update(LinuxParser::CpuUtilization());
-
     return currentData.GetAllSum();
  }
 

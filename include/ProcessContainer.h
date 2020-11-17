@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <set>
 
 #include "process.h"
 #include "processor.h"
@@ -17,11 +17,11 @@ class ProcessContainer {
    void Sort();
 
    //JAQ TODO: This probably shouldnt't be accessible. Accessor returning a const? Can I do that?
-    std::vector<Process*> processVec = {};
+    std::vector<Process> processVec = {};
 
  private:
   Processor cpu_ = {};
-  std::map<int, Process*> processMap = {};
+  std::set<int> processIds;
 };
 
 #endif

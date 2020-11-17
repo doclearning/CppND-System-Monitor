@@ -19,12 +19,12 @@ using std::vector;
 Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
-vector<Process*>& System::Processes() { 
+vector<Process>& System::Processes() { 
     
     vector<int> pids{LinuxParser::Pids()};
 
     processContainer.Update(pids); //Send current cpu utilization here...
-    processContainer.Sort();
+    //processContainer.Sort();
 
     return processContainer.processVec;
 }
