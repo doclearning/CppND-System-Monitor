@@ -152,7 +152,7 @@ vector<string> LinuxParser::CpuUtilization() {
         if (key == "cpu") {
 
           //Does this optimise to useing move semantics because it's a rvalue?
-          return vector<string>(std::istream_iterator<string>(linestream), {});;
+          return vector<string>(std::istream_iterator<string>(linestream), {});
         }
       }
     }
@@ -209,9 +209,38 @@ int LinuxParser::RunningProcesses() {
   return 0; 
 }
 
+vector<string> LinuxParser::CpuUtilization(int pid){
+
+  string timeUp;
+  string line;
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+  if (stream.is_open()) {
+    
+    std::getline(stream, line);
+
+    std::istringstream linestream(line);
+    return vector<string>(std::istream_iterator<string>(linestream), {});
+  }
+
+  return vector<string>{};
+}
+
 // TODO: Read and return the command associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Command(int pid) { 
+  
+  string timeUp;
+  string line;
+  std::ifstream stream(kProcDirectory + to_string(pid) + kCmdlineFilename);
+  if (stream.is_open()) {
+    
+    std::getline(stream, line);
+
+    //std::istringstream linestream(line);
+    //linestream >> timeUp;
+  }
+
+  return line;
+}
 
 string LinuxParser::Ram(int pid) { 
   

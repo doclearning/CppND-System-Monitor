@@ -3,9 +3,9 @@
 #include "processor.h"
 #include "linux_parser.h"
 
-
 using std::vector;
 using std::string;
+using namespace processorData;
 
 // JAQ: Return the aggregate CPU utilization
 // JAQ: uses cashing to reduve the number of calculations

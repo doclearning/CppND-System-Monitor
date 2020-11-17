@@ -29,6 +29,6 @@ void ProcessContainer::Update(vector<int>& pids){
 void ProcessContainer::Sort(){
 
   std::sort(processVec.begin(), processVec.end(), [](const Process* processA, const Process* processB) {
-    return processA->pid > processB->pid;
+    return processA->cpuUtilization > processB->cpuUtilization;
   });
 }

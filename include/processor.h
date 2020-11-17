@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 
+namespace processorData{
 struct Data {
 
     static constexpr int numElements = 10;
@@ -41,14 +42,17 @@ struct Data {
         //user nice system idle iowait irq softirq steal guest guest_nice
         std::vector<long> values;
 };
+}
+
+using namespace processorData;
 
 class Processor {
  public:
   float Utilization();
 
  private:
-    Data currentData;
-    Data previousData;
+    processorData::Data currentData;
+    processorData::Data previousData;
 
     void UpdateData(std::vector<std::string> cpuStrings);
 
