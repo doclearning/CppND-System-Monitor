@@ -25,6 +25,9 @@ class Process {
  private:
     
     float cpuUtilizationCache;
+
+
+    int debugCount = 0;
 };
 
 #endif

@@ -213,8 +213,6 @@ int LinuxParser::RunningProcesses() {
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid) { 
   
   string line, key, value;
@@ -229,7 +227,7 @@ string LinuxParser::Ram(int pid) {
 
           //JAQ: OK, this is just kind of fun. Cut off the last three chars of the string rather than casting to and int and back
           int size = value.size();
-          if(size >= 3){
+          if(size >= 4){
             value.erase(size-3);
             return value;
           }
@@ -243,20 +241,60 @@ string LinuxParser::Ram(int pid) {
   return string(); 
 }
 
-// TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Uid(int pid) { 
+  
+  string line, key, value;
 
-// TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatusFilename);
 
-// JAQ: The times in the UI don't seem to update. Not sure why. Need to look into this.
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        
+        if (key == "Uid:") {
+
+          return value;
+        }
+      }
+    }
+  }
+
+  return string();
+}
+
+string LinuxParser::User(int pid){
+
+  string uid = Uid(pid);
+
+  if(uid.empty())
+    return string();
+
+  string line, pswdName, pswdPass, pswdUid;
+  std::ifstream filestream(kPasswordPath);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line);
+      while (linestream >> pswdName >> pswdPass >> pswdUid) {
+        if (pswdUid == uid) {
+
+          return pswdName;
+        }
+      }
+    }
+  }
+  return string();
+  
+}
+
+// JAQ TODO: The times in the UI don't seem to update. Not sure why. Need to look into this.
 long LinuxParser::UpTime(int pid) { 
   
-  string timeUp;
-  string line;
+  string line, timeUp;
+
   std::ifstream stream(kProcDirectory + to_string(pid)+ kStatFilename);
+
   if (stream.is_open()) {
     
     std::getline(stream, line);
@@ -266,8 +304,6 @@ long LinuxParser::UpTime(int pid) {
       linestream.ignore(256, ' ');    
     }
     linestream >> timeUp;
-
-    stream.close();
 
     return std::stol(timeUp)/sysconf(_SC_CLK_TCK);
   }
