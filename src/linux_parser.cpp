@@ -217,8 +217,30 @@ string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid) { 
   
+  string line, key, value;
+  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatusFilename);
+
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        
+        if (key == "VmSize:") {
+
+          //JAQ: OK, this is just kind of fun. Cut off the last three chars of the string rather than casting to and int and back
+          int size = value.size();
+          if(size >= 3){
+            value.erase(size-3);
+            return value;
+          }
+
+          return "0";
+        }
+      }
+    }
+  }
+
   return string(); 
-  
 }
 
 // TODO: Read and return the user ID associated with a process
@@ -229,6 +251,26 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
 
-// TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+// JAQ: The times in the UI don't seem to update. Not sure why. Need to look into this.
+long LinuxParser::UpTime(int pid) { 
+  
+  string timeUp;
+  string line;
+  std::ifstream stream(kProcDirectory + to_string(pid)+ kStatFilename);
+  if (stream.is_open()) {
+    
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+
+    for (int i=0; i < 21; i++) {
+      linestream.ignore(256, ' ');    
+    }
+    linestream >> timeUp;
+
+    stream.close();
+
+    return std::stol(timeUp)/sysconf(_SC_CLK_TCK);
+  }
+  
+  return 0;
+ }

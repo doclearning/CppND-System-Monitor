@@ -22,27 +22,11 @@ Processor& System::Cpu() { return cpu_; }
 vector<Process*>& System::Processes() { 
     
     vector<int> pids{LinuxParser::Pids()};
-    
+
     processContainer.Update(pids);
     processContainer.Sort();
 
-    // if(debug == false){
-
-    //     // for(int pid : pids){
-
-    //     //     processes_.emplace_back(Process(pid));
-    //     // }
-        
-
-    //     debug = true;
-    // }
-
-    // for(auto& process: processMap){
-    //     process.second.CpuUtilization();
-    // }
-
-    return processContainer.processVec; 
-    
+    return processContainer.processVec;
 }
 
 //JAQ: Done

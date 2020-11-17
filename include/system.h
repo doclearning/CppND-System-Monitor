@@ -24,11 +24,6 @@ class System {
  private:
   Processor cpu_ = {};
   ProcessContainer processContainer = {};
-
-  std::vector<Process> processes_ = {};
-  std::map<int, Process> processMap = {};
-
-  bool debug = false;
 };
 
 #endif
