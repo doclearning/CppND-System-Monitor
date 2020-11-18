@@ -23,28 +23,49 @@ float Process::CpuUtilization() {
     return cpuUtilization;
 }
 
-void Process::UpdateCpuUtilization(float TotalProcessorUtilization){
+void Process::UpdateCpuUtilization(long totalProcessorJiffies){
+
+    
+
+    //totalProcessorUtilization = totalProcessorUtilizationIn;
 
     UpdateData(LinuxParser::CpuUtilization(pid));
 
-    currentData.TotalProcessCache = currentData.Utime() + currentData.Stime();
-    currentData.TotalProcessorCache = TotalProcessorUtilization;
+    long currentProcessJiffies = currentData.Utime() + currentData.Stime();
+    //currentData.TotalProcessorCache = totalProcessorJiffies;
 
-    float divisor = (float)currentData.TotalProcessorCache-previousData.TotalProcessorCache;
+    long divisor = (totalProcessorJiffies-previousProcessorJiffies);
+
+    //std::cout << "("<< totalProcessorJiffies <<  "," << previousProcessorJiffies << ")\n";
 
     if(divisor == 0){
         return;
     }
 
+    //std::cout << "div("<< divisor << ")\n";
+
+    //std::cout << "("<< currentProcessJiffies <<  "," << previousProcessJiffies << ")\n";
+
     if(hasPreviousData)
-        cpuUtilization = (currentData.TotalProcessCache - previousData.TotalProcessCache)/divisor;
+        cpuUtilization = (currentProcessJiffies - previousProcessJiffies)/divisor;
+
 
     hasPreviousData = true;
+
+    previousProcessJiffies = currentProcessJiffies;
+    previousProcessorJiffies = totalProcessorJiffies;
+
+    /
+    //Something really strange here. previous values are not getting set, so the this whole algorithim doesn't work
+    //A lead is that Update seems to run twice in ProcessContainer, meaning that there might be two copies of each process. Wtf?
+    //There's also a segmentation fault when a process is killed... need to remove them from the list.
+
+    //std::cout << "("<< totalProcessorJiffies <<  "," << previousProcessorJiffies << ")\n";
 }
 
 void Process::UpdateData(vector<string> cpuStrings){
 
-    std::swap(currentData, previousData);
+    //std::swap(currentData, previousData);
     currentData.Update(cpuStrings);
 }
 

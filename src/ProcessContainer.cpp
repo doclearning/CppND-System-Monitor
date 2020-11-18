@@ -19,7 +19,7 @@ void ProcessContainer::Update(vector<int>& pids){
         }
       }
 
-      float updatedUtilization =  cpu_.TotalUtilization();
+      long updatedUtilization =  cpu_.TotalJiffies();
 
       for(auto process : processVec){
         //process.TotalProcessorUtilization = updatedUtilization;
@@ -32,8 +32,8 @@ void ProcessContainer::Update(vector<int>& pids){
 
 void ProcessContainer::Sort(){
 
-  //std::cout
-  //std::sort(processVec.begin(), processVec.end());//, std::greater<>);
+  //std::sort(processVec.begin(), processVec.end()), std::greater<Process>());
+  std::sort(processVec.begin(), processVec.end(),[] (Process const& a, Process const& b) { return a.cpuUtilization > b.cpuUtilization; });
 }
 
 //JAQ: Lambda to support vector of pointers

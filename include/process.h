@@ -11,9 +11,9 @@ namespace processData{
       static constexpr int numElements = 5;
       
       public:
-         Data(){
-               //Wstd::fill_n(std::back_inserter(values), numElements, 0W);
-         }
+         // Data(){
+         //       //Wstd::fill_n(std::back_inserter(values), numElements, 0);
+         // }
 
          void Update(std::vector<std::string> valuesIn){
 
@@ -40,9 +40,9 @@ namespace processData{
 
          long Utime(){return utime;}
          long Stime(){return stime;}
-         long Cutime(){return stime;}
-         long Cstime(){return stime;}
-         long Starttime(){return stime;}
+         long Cutime(){return cutime;}
+         long Cstime(){return cstime;}
+         long Starttime(){return starttime;}
 
          //JAQ: Perhaps lazy, but seems low risk
          //long IdleCache;
@@ -60,8 +60,8 @@ using namespace processData;
 
 class Process {
  public:
-    Process(int pidIn/*, Processor& cpuIn*/) : pid(pidIn)/*, cpu(cpuIn)*/ {}
-    //Process() : pid(0) {}
+    Process() {}
+    Process(int pidIn) : pid(pidIn){}
 
     int Pid();                               
     std::string User();                      
@@ -69,12 +69,15 @@ class Process {
     float CpuUtilization();                  
     std::string Ram();                       
     long int UpTime();                       
-    bool operator<(Process const& a) const;  
+    bool operator<(const Process&  other) const; 
+
     //bool operator>(Process const& a) const;
-   const int pid = 0;
+   int pid = 0;
    float cpuUtilization = 0;
 
-   void UpdateCpuUtilization(float TotalProcessorUtilization);
+   void UpdateCpuUtilization(long totalProcessorJiffies);
+
+   float TotalProcessorUtilization = 0.0;
 
  private:
     
@@ -83,6 +86,9 @@ class Process {
     processData::Data previousData;
 
     bool hasPreviousData = false;
+
+   long previousProcessorJiffies = 0;
+   long previousProcessJiffies = 0;
 
     void UpdateData(std::vector<std::string> cpuStrings);
 };

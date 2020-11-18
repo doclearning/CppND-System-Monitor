@@ -27,10 +27,13 @@ float Processor::Utilization() {
     return (totald - idled)/totald;
  }
 
- float Processor::TotalUtilization() {
+ long Processor::TotalJiffies() {
     
-    currentData.Update(LinuxParser::CpuUtilization());
-    return currentData.GetAllSum();
+   currentData.Update(LinuxParser::CpuUtilization());
+
+   //std::cout << " CPU(" << data << ") ";
+
+   return currentData.GetAllSum();
  }
 
  void Processor::UpdateData(vector<string> cpuStrings){

@@ -23,7 +23,7 @@ struct Data {
             }
         }
 
-        float GetAllSum(){
+        long GetAllSum(){
             long sum = 0;
             for(auto value : values){
                 sum+=value;
@@ -57,7 +57,7 @@ using namespace processorData;
 class Processor {
  public:
   float Utilization();
-  float TotalUtilization();
+  long TotalJiffies();
 
  private:
     processorData::Data currentData;

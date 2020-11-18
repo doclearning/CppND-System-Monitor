@@ -24,7 +24,10 @@ vector<Process>& System::Processes() {
     vector<int> pids{LinuxParser::Pids()};
 
     processContainer.Update(pids); //Send current cpu utilization here...
-    //processContainer.Sort();
+
+    //std::cout << "size (" << processContainer.processVec.size() << ")\n";
+
+    processContainer.Sort();
 
     return processContainer.processVec;
 }
