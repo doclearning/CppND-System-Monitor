@@ -18,14 +18,14 @@ struct Data {
         void Update(std::vector<std::string> stringvalues){
 
             int index = 0;
-            for(auto value : stringvalues){
+            for(auto& value : stringvalues){
                 values[index++] = std::stol(value);
             }
         }
 
         long GetAllSum(){
             long sum = 0;
-            for(auto value : values){
+            for(auto& value : values){
                 sum+=value;
             }
             return sum;

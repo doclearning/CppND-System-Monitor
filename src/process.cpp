@@ -12,61 +12,33 @@
 using std::string;
 using std::to_string;
 using std::vector;
-using namespace processData;
 
 // TODO: Return pid instead of 0
 int Process::Pid() { return pid; }
 
-// TODO: Return this process's CPU utilization
 float Process::CpuUtilization() { 
 
     return cpuUtilization;
 }
 
-void Process::UpdateCpuUtilization(long totalProcessorJiffies){
+void Process::UpdateCpuUtilization(long currentProcessorJiffies){
 
-    
+    data.Update(LinuxParser::CpuUtilization(pid));
 
-    //totalProcessorUtilization = totalProcessorUtilizationIn;
+    long currentProcessJiffies = data.Utime() + data.Stime();
 
-    UpdateData(LinuxParser::CpuUtilization(pid));
 
-    long currentProcessJiffies = currentData.Utime() + currentData.Stime();
-    //currentData.TotalProcessorCache = totalProcessorJiffies;
+    float top = (float)(currentProcessJiffies - (previousProcessJiffies));
+    float bottom = (float)(currentProcessorJiffies-(previousProcessorJiffies));
 
-    long divisor = (totalProcessorJiffies-previousProcessorJiffies);
-
-    //std::cout << "("<< totalProcessorJiffies <<  "," << previousProcessorJiffies << ")\n";
-
-    if(divisor == 0){
-        return;
+    if(hasPreviousData){
+        if(bottom != 0)
+            cpuUtilization =top/bottom;
     }
 
-    //std::cout << "div("<< divisor << ")\n";
-
-    //std::cout << "("<< currentProcessJiffies <<  "," << previousProcessJiffies << ")\n";
-
-    if(hasPreviousData)
-        cpuUtilization = (currentProcessJiffies - previousProcessJiffies)/divisor;
-
-
-    hasPreviousData = true;
-
-    previousProcessJiffies = currentProcessJiffies;
-    previousProcessorJiffies = totalProcessorJiffies;
-
-    /
-    //Something really strange here. previous values are not getting set, so the this whole algorithim doesn't work
-    //A lead is that Update seems to run twice in ProcessContainer, meaning that there might be two copies of each process. Wtf?
-    //There's also a segmentation fault when a process is killed... need to remove them from the list.
-
-    //std::cout << "("<< totalProcessorJiffies <<  "," << previousProcessorJiffies << ")\n";
-}
-
-void Process::UpdateData(vector<string> cpuStrings){
-
-    //std::swap(currentData, previousData);
-    currentData.Update(cpuStrings);
+    this->hasPreviousData = true;
+    this->previousProcessJiffies = currentProcessJiffies;
+    this->previousProcessorJiffies = currentProcessorJiffies;
 }
 
 // TODO: Return the command that generated this process
