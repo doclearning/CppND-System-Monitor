@@ -48,6 +48,7 @@ string LinuxParser::Kernel() {
 }
 
 // BONUS: Update this to use std::filesystem
+//JAQ: This doesn't sound fun :D
 vector<int> LinuxParser::Pids() {
   vector<int> pids;
   DIR* directory = opendir(kProcDirectory.c_str());
@@ -209,6 +210,7 @@ int LinuxParser::RunningProcesses() {
   return 0; 
 }
 
+// JAQ: Done
 vector<string> LinuxParser::CpuUtilization(int pid){
 
   string timeUp;
@@ -217,17 +219,15 @@ vector<string> LinuxParser::CpuUtilization(int pid){
   if (stream.is_open()) {
     
     std::getline(stream, line);
-
     std::istringstream linestream(line);
 
-    //std::cout << "Data(" << line << ")\n";
     return vector<string>(std::istream_iterator<string>(linestream), {});
   }
 
   return vector<string>{};
 }
 
-// TODO: Read and return the command associated with a process
+// JAQ: Done
 string LinuxParser::Command(int pid) { 
   
   string timeUp;
@@ -236,14 +236,12 @@ string LinuxParser::Command(int pid) {
   if (stream.is_open()) {
     
     std::getline(stream, line);
-
-    //std::istringstream linestream(line);
-    //linestream >> timeUp;
   }
 
   return line;
 }
 
+// JAQ: Done
 string LinuxParser::Ram(int pid) { 
   
   string line, key, value;
@@ -256,7 +254,7 @@ string LinuxParser::Ram(int pid) {
         
         if (key == "VmSize:") {
 
-          //JAQ: OK, this is just kind of fun. Cut off the last three chars of the string rather than casting to and int and back
+          //JAQ: OK, this is just kind of a fun way to do this rather than two casts and allocations
           int size = value.size();
           if(size >= 4){
             value.erase(size-3);
@@ -272,6 +270,7 @@ string LinuxParser::Ram(int pid) {
   return string(); 
 }
 
+// JAQ: Done
 string LinuxParser::Uid(int pid) { 
   
   string line, key, value;
@@ -294,6 +293,7 @@ string LinuxParser::Uid(int pid) {
   return string();
 }
 
+// JAQ: Done
 string LinuxParser::User(int pid){
 
   string uid = Uid(pid);
@@ -319,7 +319,7 @@ string LinuxParser::User(int pid){
   
 }
 
-// JAQ TODO: The times in the UI don't seem to update. Not sure why. Need to look into this.
+// JAQ: Done
 long LinuxParser::UpTime(int pid) { 
   
   string line, timeUp;

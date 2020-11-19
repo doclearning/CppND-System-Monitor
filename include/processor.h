@@ -15,6 +15,7 @@ struct Data {
             std::fill_n(std::back_inserter(values), numElements, 0);
         }
 
+        //JAQ: Pretty sure stringvalues here is still an rvalue, and thus 'move'd here, not copied
         void Update(std::vector<std::string> stringvalues){
 
             int index = 0;

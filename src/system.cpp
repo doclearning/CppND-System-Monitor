@@ -18,18 +18,14 @@ using std::vector;
 // JAQ: Done
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
     
     vector<int> pids{LinuxParser::Pids()};
 
-    processContainer.Update(pids); //Send current cpu utilization here...
-
-    //std::cout << "size (" << processContainer.processVec.size() << ")\n";
-
+    processContainer.Update(pids);
     processContainer.Sort();
 
-    return processContainer.processVec;
+    return processContainer.Processes();
 }
 
 //JAQ: Done

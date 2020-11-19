@@ -13,7 +13,6 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return pid instead of 0
 int Process::Pid() { return pid; }
 
 float Process::CpuUtilization() { 
@@ -41,16 +40,12 @@ void Process::UpdateCpuUtilization(long currentProcessorJiffies){
     this->previousProcessorJiffies = currentProcessorJiffies;
 }
 
-// TODO: Return the command that generated this process
 string Process::Command() { return LinuxParser::Command(pid); }
 
-// TODO: Return this process's memory utilization
 string Process::Ram() { return LinuxParser::Ram(pid); }
 
-// TODO: Return the user (name) that generated this process
 string Process::User() { return LinuxParser::User(pid); }
 
-// TODO: Return the age of this process (in seconds)
 long int Process::UpTime() { return LinuxParser::UpTime(pid); }
 
 bool Process::operator<(const Process& other) const { 
