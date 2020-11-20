@@ -26,18 +26,17 @@ void Process::UpdateCpuUtilization(long currentProcessorJiffies){
 
     long currentProcessJiffies = data.Utime() + data.Stime();
 
-
-    float top = (float)(currentProcessJiffies - (previousProcessJiffies));
-    float bottom = (float)(currentProcessorJiffies-(previousProcessorJiffies));
+    float top = (float)(currentProcessJiffies - previousProcessJiffies);
+    float bottom = (float)(currentProcessorJiffies-previousProcessorJiffies);
 
     if(hasPreviousData){
-        if(bottom != 0)
-            cpuUtilization =top/bottom;
+        if(bottom > 0)
+            cpuUtilization = top/bottom;
     }
 
-    this->hasPreviousData = true;
-    this->previousProcessJiffies = currentProcessJiffies;
-    this->previousProcessorJiffies = currentProcessorJiffies;
+    hasPreviousData = true;
+    previousProcessJiffies = currentProcessJiffies;
+    previousProcessorJiffies = currentProcessorJiffies;
 }
 
 string Process::Command() { return LinuxParser::Command(pid); }
